@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year Wish</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; background: #000; color: #fff; text-align: center; overflow-x: hidden; font-family: 'Dancing Script', cursive; }
+        .container { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: url('https://images.unsplash.com/photo-1546768292-fb12f6c92568?auto=format&fit=crop&w=1350&q=80') center/cover; background-blend-mode: overlay; background-color: rgba(0,0,0,0.7); }
+        .sender-name { font-size: 2.5em; color: #00ffcc; text-shadow: 2px 2px #000, 0 0 20px #00ffcc; margin-bottom: 10px; }
+        .main-title { font-size: 4em; color: gold; text-shadow: 0 0 10px gold; animation: pulse 1.5s infinite; font-family: 'Pacifico', cursive; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .shayari { font-size: 1.5em; margin: 20px; color: #ffeb3b; max-width: 80%; }
+        .input-box { background: rgba(255, 255, 255, 0.2); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; width: 300px; }
+        input { width: 90%; padding: 12px; border: none; border-radius: 5px; font-size: 1em; margin-bottom: 15px; text-align: center; }
+        button { background: #25d366; color: white; border: none; padding: 12px 25px; border-radius: 50px; font-size: 1.2em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; }
+        button:hover { background: #128c7e; }
+        .music-info { font-size: 0.8em; color: #ddd; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="sender-name" th:text="${senderName} + ' ki taraf se'"></div>
+        
+        <div class="main-title">Happy New Year 2026!</div>
+
+        <div class="shayari">
+            "Sunehri dhoop barsat ke baad,<br>
+            thodi si hansi har baat ke baad,<br>
+            mubarak ho aapko 2026 ka naya saal,<br>
+            kal ki raat ke baad!"
+        </div>
+
+        <div class="input-box">
+            <h3 style="margin-top:0">Apna Name Likhein:</h3>
+            <input type="text" id="myName" placeholder="Yahan naam likhein...">
+            <button onclick="createAndShare()">👉 WhatsApp par bhejein</button>
+            <div class="music-info">(Screen par click karein music ke liye 🎵)</div>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Music start on click
+        document.body.addEventListener('click', function() {
+            document.getElementById('bgMusic').play();
+            showConfetti();
+        }, { once: true });
+
+        // Fireworks/Confetti effect
+        function showConfetti() {
+            var end = Date.now() + (15 * 1000);
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        }
+
+        function createAndShare() {
+            var name = document.getElementById('myName').value;
+            if(!name) { alert("Pehle apna naam toh likhein!"); return; }
+
+            // Naya link banana
+            var currentUrl = window.location.origin + window.location.pathname;
+            var finalUrl = currentUrl + "?sender=" + encodeURIComponent(name);
+            
+            // WhatsApp message content
+            var message = "🔥 *" + name + "* ne aapke liye ek special surprise bheja hai! 🎁\n\nIse dekhne ke liye jaldi se neeche click karein 👇\n" + finalUrl;
+            
+            // WhatsApp par redirect karna
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
+        }
+    </script>
+</body>
+</html>
